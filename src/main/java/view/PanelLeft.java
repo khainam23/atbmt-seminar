@@ -1,19 +1,27 @@
 package view;
 
 import config.IconConfig;
+import config.LayoutConfig;
+import controller.FactoryLayoutAction;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.Arrays;
+import java.lang.reflect.Field;
 import java.util.List;
+import java.util.*;
 
 import static config.DimensionConfig.SIZE_LEFT;
 
+/**
+ * Note: Hiển thị layout cho phía bên trái của giao diện chính.
+ * Tự động map tên của các phần tử trong LayoutConfig.
+ */
 public class PanelLeft extends JPanel {
     private static PanelLeft panelLeft;
     private JPanel panelList;
+    private Set<String> layoutIgnore;
 
     private PanelLeft() {
         init();
@@ -24,6 +32,13 @@ public class PanelLeft extends JPanel {
     }
 
     private void init() {
+        layoutIgnore = new HashSet<>(
+                Arrays.asList(
+                        LayoutConfig.FILE_INPUT_LAYOUT,
+                        LayoutConfig.DEFAULT_LAYOUT
+                )
+        );
+
         setPreferredSize(SIZE_LEFT);
 
         ScrollPaneWin11 scrollPane = new ScrollPaneWin11();
@@ -73,6 +88,7 @@ public class PanelLeft extends JPanel {
         final MouseAdapterCustom mouseAdapterCustom = new MouseAdapterCustom(panelItem);
         panelItem.addMouseListener(mouseAdapterCustom);
 
+        panelItem.addMouseListener(FactoryLayoutAction.getInstance());
         panelItem.add(labelIcon);
         panelItem.add(labelName);
         panelList.add(panelItem);
@@ -85,14 +101,22 @@ public class PanelLeft extends JPanel {
 
             public Item(ImageIcon img, String content) {
                 this.img = img;
-                this.content = content;
+                this.content = content.toUpperCase();
             }
         }
 
-        List<Item> items = Arrays.asList(
-                new Item(null, "ShiftCipher"),
-                new Item(null, "SubstitutionCipher")
-        );
+        List<Item> items = new ArrayList<>();
+        Class<?> myLayoutConfig = LayoutConfig.class;
+        Field[] fields = myLayoutConfig.getFields();
+        for (Field field : fields) {
+            try {
+                String value = (String) field.get(null);
+                if (!layoutIgnore.contains(value))
+                    items.add(new Item(null, value));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
 
         items.forEach(item -> addItem(item.img, item.content));
     }

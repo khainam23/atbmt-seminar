@@ -15,7 +15,7 @@ public class PanelFooter extends JPanel {
     }
 
     private void init() {
-        JLabel label = new JLabel("Empty");
+        JLabel label = new JLabel();
         setLayout(new FlowLayout(FlowLayout.LEFT));
         add(label);
 

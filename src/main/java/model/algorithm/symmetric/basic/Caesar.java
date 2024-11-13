@@ -1,13 +1,23 @@
-package model;
+package model.algorithm.symmetric.basic;
+
+import model.AAlgorithm;
 
 import java.util.Random;
 
-public class ShiftCipher extends AAlgorithmCipher {
-    private int shift = 3;
+/**
+ * Note: Sử dụng bảng chữ cái để làm mã hóa. Nó sẽ dịch vị trí của plaintext
+ * đi shift lần và cho ra ciphertext
+ */
+public class Caesar extends AAlgorithm {
+    private int shift;
+
+    public Caesar() {
+        generateKey();
+    }
 
     @Override
     public String generateKey() {
-        this.shift = new Random().nextInt() + 1;
+        this.shift = new Random().nextInt(alphabet.length()) + 1;
         return shift + "";
     }
 
@@ -21,6 +31,11 @@ public class ShiftCipher extends AAlgorithmCipher {
         } catch (NumberFormatException exception) {
             throw new RuntimeException("Key is not a number");
         }
+    }
+
+    @Override
+    public String getKey() {
+        return shift + "";
     }
 
     @Override

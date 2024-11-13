@@ -1,10 +1,10 @@
 import model.Alphabet;
-import model.ShiftCipher;
+import model.algorithm.symmetric.basic.Caesar;
 
 
 public class ShiftCipherTest {
     public static void main(String[] args) {
-        ShiftCipher shiftCipher = new ShiftCipher();
+        Caesar shiftCipher = new Caesar();
         shiftCipher.setAlphabet(Alphabet.ENGLISH);
         String text = "âbc";
         System.out.printf("After: %s - Before: %s \n", text, shiftCipher.encrypt(text));

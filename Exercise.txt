@@ -1,12 +1,10 @@
-Mã hóa file
-Sử dụng Base64 + Thay thế
-Chuyển file về Base64 và lưu file
----------------
 ĐỒ ÁN CÁ NHÂN GIỮA KỲ:
 - Ứng dụng viết bằng java.
 - 5 nội dung chính:
 1. Các giải thuật cơ bản (dịch chuyển, thay thế,...). Chỉ thao tác với văn bản.
-2. Thực hiện các giải thuật đối xứng (toàn bộ giải thuật java hỗ trợ) trong đó có 2 - 3 giải thuật tìm kiếm các thư viện hỗ trợ để làm. Cho phép chọn mode và padding. Thao tác với file và văn bản.
+2. Thực hiện các giải thuật đối xứng (toàn bộ giải thuật java hỗ trợ) trong đó có 2 - 3
+giải thuật tìm kiếm các thư viện hỗ trợ để làm. Cho phép chọn mode và padding.
+Thao tác với file và văn bản.
 3. Thực hiện giải thuật mã hóa bất đối xứng. Chỉ cần thao tác với văn bản ngắn.
 4. Thực hiện các giải thuật về hash. Tính toán giá trị hash của file hoặc văn bản.
 5. Chữ ký điện tử: cơ chế phát sinh chữ ký và kiểm tra chữ ký.

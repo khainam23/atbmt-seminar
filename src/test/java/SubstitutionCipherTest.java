@@ -1,10 +1,10 @@
 import model.Alphabet;
-import model.SubstitutionCipher;
+import model.algorithm.symmetric.basic.SubstitutionCipher;
 
 public class SubstitutionCipherTest {
     public static void main(String[] args) {
         SubstitutionCipher substitutionCipher = new SubstitutionCipher();
-        substitutionCipher.setAlphabet(Alphabet.VIETNAM);
+        substitutionCipher.setAlphabet(Alphabet.ENGLISH);
         String key = substitutionCipher.generateKey();
         System.out.printf("Key generate: %s \n", key);
         substitutionCipher.loadKey(key);

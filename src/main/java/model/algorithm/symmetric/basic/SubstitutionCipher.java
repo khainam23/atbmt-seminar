@@ -1,14 +1,21 @@
-package model;
+package model.algorithm.symmetric.basic;
 
-import model.Alphabet;
-import model.AAlgorithmCipher;
+import model.AAlgorithm;
 
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
-public class SubstitutionCipher extends AAlgorithmCipher {
-    private String hashAlphabet = generateKey();
+/**
+ * Note: Nó tạo ra một bảng chữ cái ngẫu nhiên không trùng lặp.
+ * Sau đó ánh xạ plaintext theo vị trí tương ứng trong bảng chữ cái.
+ */
+public class SubstitutionCipher extends AAlgorithm {
+    private String hashAlphabet;
+
+    public SubstitutionCipher() {
+        generateKey();
+    }
 
     @Override
     public String generateKey() {
@@ -31,6 +38,11 @@ public class SubstitutionCipher extends AAlgorithmCipher {
     public void loadKey(String key) {
         if (key.length() != alphabet.length()) throw new RuntimeException("Key of user not same size with alphabet.");
         else this.hashAlphabet = key.toLowerCase();
+    }
+
+    @Override
+    public String getKey() {
+        return hashAlphabet;
     }
 
     @Override

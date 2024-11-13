@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="ATBMHTTT:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/ATBMHTTT_jar</output-path>
+    <root id="archive" name="ATBMHTTT.jar">
+      <element id="module-output" name="ATBMHTTT" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/TimingFramework-0.55.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

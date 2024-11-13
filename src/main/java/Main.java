@@ -1,4 +1,4 @@
-package view;
+import view.Frame;
 
 import javax.swing.*;
 
