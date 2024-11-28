@@ -8,4 +8,5 @@ public interface DimensionConfig {
     Dimension SIZE_LEFT = new Dimension(200, 0);
     Dimension SIZE_RIGHT = new Dimension(300, 0);
     Dimension SIZE_FOOTER = new Dimension(0, 25);
+    Dimension SIZE_ITEM_MENU = new Dimension(0, 100);
 }

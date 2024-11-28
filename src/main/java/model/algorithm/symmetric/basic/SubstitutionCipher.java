@@ -13,10 +13,6 @@ import java.util.Set;
 public class SubstitutionCipher extends AAlgorithm {
     private String hashAlphabet;
 
-    public SubstitutionCipher() {
-        generateKey();
-    }
-
     @Override
     public String generateKey() {
         StringBuilder builder = new StringBuilder();

@@ -14,6 +14,7 @@ public interface IconConfig {
     ImageIcon ICON_JAVA = setResizeIcon("java.png");
     ImageIcon ICON_INPUT = setResizeIcon("input.png");
     ImageIcon ICON_SAVE = setResizeIcon("save.png");
+    ImageIcon ICON_UPLOAD = setResizeIcon("upload.png");
 
     static ImageIcon setResizeIcon(String path) {
         return setResizeIcon(path, HEIGHT, WIDTH);

@@ -1,4 +1,4 @@
-package view;
+package view.algorithm.symmetric.support;
 
 import config.IconConfig;
 import controller.FactoryLayoutAction;
@@ -6,28 +6,25 @@ import model.algorithm.symmetric.support.AlgorithmBlock;
 import model.algorithm.symmetric.support.ModesOfOperation;
 import model.algorithm.symmetric.support.PaddingScheme;
 import model.algorithm.symmetric.support.TypeInput;
+import view.algorithm.APanel;
+import view.custom.ButtonCustom;
+import view.custom.ScrollPaneWin11;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.Arrays;
 
-public class PanelDes extends JPanel implements IContentPanel {
-    private static PanelDes panelDes;
-    private AlgorithmBlock des;
-    private JTextArea textArea;
+public class PanelAes extends APanel {
+    private static PanelAes panelAes;
+    private AlgorithmBlock aesModel;
     private JLabel labelHashLanguage;
-    private String tempContent;
 
-    private PanelDes() {
-        init();
+    public static PanelAes getInstance() {
+        return panelAes == null ? panelAes = new PanelAes() : panelAes;
     }
-
-    public static PanelDes getInstance() {
-        return panelDes == null ? panelDes = new PanelDes() : panelDes;
-    }
-
-    private void init() {
-        des = new AlgorithmBlock("DES");
+    @Override
+    protected void init() {
+        aesModel = new AlgorithmBlock("AES");
 
         setLayout(new BorderLayout(2, 2));
 
@@ -35,6 +32,7 @@ public class PanelDes extends JPanel implements IContentPanel {
         JPanel panelOptionFunction = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         JComboBox<String> comboBoxTypesInput = new JComboBox<>(Arrays.stream(TypeInput.values()).map(Enum::name).toArray(String[]::new));
+        comboBoxTypesInput.setSelectedItem(aesModel.getNameMOO());
         comboBoxTypesInput.addItemListener(item -> {
             String nameType = (String) item.getItem();
             if (nameType.equals(TypeInput.TEXT.name())) {
@@ -51,9 +49,10 @@ public class PanelDes extends JPanel implements IContentPanel {
         panelOptionFunction.add(comboBoxTypesInput, gbc);
 
         JComboBox<String> comboBoxMOOs = new JComboBox<>(Arrays.stream(ModesOfOperation.values()).map(Enum::name).toArray(String[]::new));
+        comboBoxTypesInput.setSelectedItem(aesModel.getNamePadding());
         comboBoxMOOs.addItemListener(item -> {
             String nameMOO = (String) item.getItem();
-            des.setMOO(nameMOO);
+            aesModel.setMOO(nameMOO);
         });
         gbc.gridx = 0;
         gbc.gridy = 1;
@@ -64,7 +63,12 @@ public class PanelDes extends JPanel implements IContentPanel {
         JComboBox<String> comboBoxPaddings = new JComboBox<>(Arrays.stream(PaddingScheme.values()).map(PaddingScheme::getDescription).toArray(String[]::new));
         comboBoxPaddings.addItemListener(item -> {
             String namePadding = (String) item.getItem();
-            des.setPadding(namePadding);
+            String convertToIdPadding = Arrays.stream(PaddingScheme.values())
+                    .filter(uidPadding -> uidPadding.name().equals(namePadding))
+                    .map(Enum::name)
+                    .findFirst()
+                    .orElse(null);
+            aesModel.setPadding(convertToIdPadding);
         });
         gbc.gridx = 1;
         gbc.gridy = 1;
@@ -77,34 +81,24 @@ public class PanelDes extends JPanel implements IContentPanel {
         panelTop.add(panelOptionFunction);
         panelTop.add(panelShowGenerateLanguage);
 
-        JPanel panelCenter = new JPanel(new BorderLayout());
-        ScrollPaneWin11 scrollPane = new ScrollPaneWin11();
-        textArea = new JTextArea();
-        textArea.setEditable(false);
-        textArea.setFont(new Font("Arial", Font.PLAIN, 18));
-        textArea.setLineWrap(true);
-        textArea.setWrapStyleWord(true);
-        scrollPane.setViewportView(textArea);
-        panelCenter.add(scrollPane, BorderLayout.CENTER);
-
         JPanel panelBottom = new JPanel(new GridLayout(1, 2, 5, 5));
         JButton btnEncrypt = new JButton("Encrypt");
         btnEncrypt.addActionListener(e -> {
             String content = textArea.getText();
-            String encryptContent = des.encrypt(content);
+            String encryptContent = aesModel.encrypt(content);
             FactoryLayoutAction.getInstance().showMsgInRight(encryptContent);
         });
         JButton btnDecrypt = new JButton("Decrypt");
         btnDecrypt.addActionListener(e -> {
             String content = textArea.getText();
-            String decryptContent = des.decrypt(content);
+            String decryptContent = aesModel.decrypt(content);
             FactoryLayoutAction.getInstance().showMsgInRight(decryptContent);
         });
         panelBottom.add(btnEncrypt);
         panelBottom.add(btnDecrypt);
 
         add(panelTop, BorderLayout.NORTH);
-        add(panelCenter, BorderLayout.CENTER);
+        add(createPanelContent(), BorderLayout.CENTER);
         add(panelBottom, BorderLayout.SOUTH);
     }
 
@@ -112,7 +106,7 @@ public class PanelDes extends JPanel implements IContentPanel {
         JPanel panelShowGenerateLanguage = new JPanel(new GridLayout(1, 3, 5, 5));
         ButtonCustom btnReloadAlphabet = new ButtonCustom(IconConfig.ICON_RELOAD);
         btnReloadAlphabet.addActionListener(e -> {
-            labelHashLanguage.setText(des.generateKey());
+            labelHashLanguage.setText(aesModel.generateKey());
             repaint();
         });
         ButtonCustom btnLoadKey = new ButtonCustom(IconConfig.ICON_INPUT);
@@ -122,23 +116,18 @@ public class PanelDes extends JPanel implements IContentPanel {
                 JOptionPane.showMessageDialog(null, "Key isn't empty!!!");
             } else {
                 try {
-                    des.loadKey(key);
-                    labelHashLanguage.setText(des.getKey());
+                    aesModel.loadKey(key);
+                    labelHashLanguage.setText(aesModel.getKey());
                 } catch (Exception exception) {
                     JOptionPane.showMessageDialog(null, exception.getMessage());
                 }
             }
         });
-        labelHashLanguage = new JLabel(des.getKey(), SwingConstants.CENTER);
+        labelHashLanguage = new JLabel(aesModel.getKey(), SwingConstants.CENTER);
         labelHashLanguage.setFont(new Font("Arial", Font.PLAIN, 15));
         panelShowGenerateLanguage.add(btnLoadKey);
         panelShowGenerateLanguage.add(btnReloadAlphabet);
         panelShowGenerateLanguage.add(labelHashLanguage);
         return panelShowGenerateLanguage;
-    }
-
-    @Override
-    public void setContent(String content) {
-        textArea.setText(content);
     }
 }

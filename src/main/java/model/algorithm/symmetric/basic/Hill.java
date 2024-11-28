@@ -16,25 +16,6 @@ public class Hill extends AAlgorithm {
     private int matrixSize;
     private char charPadding = 'q'; // Chỉ xuất hiện ở đầu trong mọi bảng chữ cái mà tui biết :>>
 
-    public Hill() {
-        generateKey();
-    }
-
-    public static void main(String[] args) {
-        Hill hill = new Hill();
-        hill.setAlphabet(Alphabet.VIETNAM);
-
-        System.out.println(hill.getKey());
-        hill.loadKey(hill.getKey());
-
-        String msg = "Anh ban a";
-        String encrypted = hill.encrypt(msg);
-        System.out.println("Encrypted Message: " + encrypted);
-
-        String decrypted = hill.decrypt(encrypted);
-        System.out.println("Decrypted Message: " + decrypted);
-    }
-
     @Override
     public String generateKey() {
         Random rd = new Random();
@@ -52,34 +33,25 @@ public class Hill extends AAlgorithm {
 
         return matrixToString(keyMatrix);
     }
-
     @Override
     public void loadKey(String key) {
         // Tải khóa từ chuỗi và chuyển đổi thành ma trận
-        String[] spaces = key.split("\n");
-        String[] keyValues = key.split(",");
-        System.out.println(Arrays.toString(keyValues));
-        matrixSize = (int) Math.sqrt(keyValues.length);
-        keyMatrix = new int[matrixSize][matrixSize];
-
-        int index = 0;
-        for (int i = 0; i < matrixSize; i++) {
-            for (int j = 0; j < matrixSize; j++) {
-                keyMatrix[i][j] = Integer.parseInt(keyValues[index++]);
+        String[] parts = key.split("(?<=\\]),\\s*(?=\\[)");
+        for(int i = 0; i < parts.length; ++i) {
+            String[] numbers = parts[i].split("[\\[\\],\\s]+");
+            for (int j = 0; j < numbers.length; j++) {
+                keyMatrix[i][j] = Integer.parseInt(numbers[j]);
             }
         }
     }
-
     @Override
     public String getKey() {
         return matrixToString(keyMatrix);
     }
-
     @Override
     public String encrypt(String msg) {
         return processMessage(msg, keyMatrix);
     }
-
     @Override
     public String decrypt(String msg) {
         // Xử lý thông điệp đầu vào
@@ -87,8 +59,6 @@ public class Hill extends AAlgorithm {
         // Phòng trường hợp q xuất hiện đầu
         return de.charAt(0) + de.substring(1).replace(charPadding, ' ').trim();
     }
-
-
     private String processMessage(String msg, int[][] matrix) {
         msg = convertMsg(msg).replace(' ', charPadding);
 
@@ -211,14 +181,14 @@ public class Hill extends AAlgorithm {
     private String matrixToString(int[][] matrix) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < matrixSize; i++) {
+            sb.append("[");
             for (int j = 0; j < matrixSize; j++) {
-                sb.append(matrix[i][j]);
-                if (i != matrixSize - 1 || j != matrixSize - 1) {
-                    sb.append(",");
-                }
+                sb.append(matrix[i][j] + ",");
             }
-            sb.append("\n");
+            sb.deleteCharAt(sb.length() - 1);
+            sb.append("], ");
         }
+        sb.delete(sb.length() - 2, sb.length());
         return sb.toString();
     }
 }

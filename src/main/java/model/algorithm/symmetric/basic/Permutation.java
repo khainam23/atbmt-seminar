@@ -13,11 +13,6 @@ import java.util.Set;
 public class Permutation extends AAlgorithm {
     private int n;
     private int[] matrix;
-
-    public Permutation() {
-        generateKey();
-    }
-
     public static void main(String[] args) {
         Permutation permutation = new Permutation();
         String msg = "hello world";
@@ -82,7 +77,7 @@ public class Permutation extends AAlgorithm {
         StringBuilder stringBuilder = new StringBuilder();
         int len = mess.length();
         for (int i = 0; i < len; i++) {
-            int indHash = matrix[i];
+            int indHash = matrix[i] % mess.length();
             stringBuilder.append(mess.charAt(indHash));
         }
         return stringBuilder.toString();

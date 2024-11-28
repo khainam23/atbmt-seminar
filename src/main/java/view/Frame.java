@@ -28,28 +28,11 @@ public class Frame extends JFrame {
     public JPanel mainLayout() {
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
-
-        // Head
-        PanelHead panelHead = PanelHead.getInstance();
-
-        // Left
-        JPanel panelLeft = PanelLeft.getInstance();
-
-        // Center
-        JPanel panelCenter = PanelCenter.getInstance();
-
-        // Right
-        JPanel panelRight = PanelRight.getInstance();
-
-        // Footer
-        JPanel panelFooter = PanelFooter.getInstance();
-
-        mainPanel.add(panelHead, BorderLayout.NORTH);
-        mainPanel.add(panelLeft, BorderLayout.WEST);
-        mainPanel.add(panelCenter, BorderLayout.CENTER);
-        mainPanel.add(panelRight, BorderLayout.EAST);
-        mainPanel.add(panelFooter, BorderLayout.SOUTH);
-
+//        mainPanel.add(PanelHead.getInstance(), BorderLayout.NORTH);
+        mainPanel.add(PanelLeft.getInstance(), BorderLayout.WEST);
+        mainPanel.add(PanelCenter.getInstance(), BorderLayout.CENTER);
+        mainPanel.add(PanelRight.getInstance(), BorderLayout.EAST);
+//        mainPanel.add(PanelFooter.getInstance(), BorderLayout.SOUTH);
         return mainPanel;
     }
 

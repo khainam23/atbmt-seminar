@@ -6,7 +6,11 @@ public class Main {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             Frame frame = new Frame();
-            frame.start();
+            try {
+                frame.start();
+            } catch (Exception exception) {
+                JOptionPane.showMessageDialog(null, "Error:" + exception.getMessage());
+            }
         });
     }
 }

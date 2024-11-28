@@ -10,17 +10,11 @@ import java.util.Random;
  */
 public class Caesar extends AAlgorithm {
     private int shift;
-
-    public Caesar() {
-        generateKey();
-    }
-
     @Override
     public String generateKey() {
         this.shift = new Random().nextInt(alphabet.length()) + 1;
         return shift + "";
     }
-
     @Override
     public void loadKey(String key) {
         try {
@@ -32,12 +26,10 @@ public class Caesar extends AAlgorithm {
             throw new RuntimeException("Key is not a number");
         }
     }
-
     @Override
     public String getKey() {
         return shift + "";
     }
-
     @Override
     public String encrypt(String msg) {
         msg = convertMsg(msg);
@@ -58,7 +50,6 @@ public class Caesar extends AAlgorithm {
 
         return builder.toString();
     }
-
     @Override
     public String decrypt(String msg) {
         msg = convertMsg(msg);
@@ -79,5 +70,4 @@ public class Caesar extends AAlgorithm {
         }
         return builder.toString();
     }
-
 }

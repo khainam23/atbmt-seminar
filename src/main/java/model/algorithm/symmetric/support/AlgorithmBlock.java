@@ -5,6 +5,7 @@ import model.AAlgorithm;
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
+import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.util.Base64;
 import java.util.Random;
@@ -20,6 +21,10 @@ public class AlgorithmBlock extends AAlgorithm {
     private String namePadding;
     private SecretKey secretKey;
 
+    public AlgorithmBlock() {
+        super();
+    }
+
     public AlgorithmBlock(String nameAlgorithm) {
         this.nameAlgorithm = nameAlgorithm;
         generateKey();
@@ -27,15 +32,17 @@ public class AlgorithmBlock extends AAlgorithm {
 
     @Override
     public String generateKey() {
-        try {
-            Random rd = new Random();
-            nameMOO = ModesOfOperation.values()[rd.nextInt(ModesOfOperation.values().length)].name();
-            namePadding = TypeInput.values()[rd.nextInt(TypeInput.values().length)].name();
-            KeyGenerator keyGen = KeyGenerator.getInstance(nameAlgorithm);
-            secretKey = keyGen.generateKey();
-            return Base64.getEncoder().encodeToString(secretKey.getEncoded());
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (nameAlgorithm != null) {
+            try {
+                Random rd = new Random();
+                nameMOO = ModesOfOperation.values()[rd.nextInt(ModesOfOperation.values().length)].name();
+                namePadding = PaddingScheme.values()[rd.nextInt(TypeInput.values().length)].name();
+                KeyGenerator keyGen = KeyGenerator.getInstance(nameAlgorithm);
+                secretKey = keyGen.generateKey();
+                return Base64.getEncoder().encodeToString(secretKey.getEncoded());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         return null;
     }
@@ -71,8 +78,15 @@ public class AlgorithmBlock extends AAlgorithm {
     @Override
     public String decrypt(String msg) {
         try {
-            Cipher cipher = Cipher.getInstance(nameAlgorithm + "/" + nameMOO + " / " + namePadding);
-            cipher.init(Cipher.DECRYPT_MODE, secretKey);
+            Cipher cipher = Cipher.getInstance(nameAlgorithm + "/" + nameMOO + "/" + namePadding);
+            System.out.println(nameMOO);
+            if (nameMOO.equals(ModesOfOperation.ECB.name())) {
+                byte[] iv = new byte[nameAlgorithm == "AES" ? 16 : 8];
+                IvParameterSpec ivParameterSpec = new IvParameterSpec(iv);
+                cipher.init(Cipher.DECRYPT_MODE, secretKey, ivParameterSpec);
+            } else {
+                cipher.init(Cipher.DECRYPT_MODE, secretKey);
+            }
             byte[] decodedBytes = Base64.getDecoder().decode(msg);
             byte[] decryptedBytes = cipher.doFinal(decodedBytes);
             return new String(decryptedBytes);
@@ -87,7 +101,9 @@ public class AlgorithmBlock extends AAlgorithm {
     }
 
     public void setPadding(String namePadding) {
-        this.namePadding = namePadding;
+        if (namePadding != null) {
+            this.namePadding = namePadding;
+        }
     }
 
     public String getNameMOO() {

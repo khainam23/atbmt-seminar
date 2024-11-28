@@ -1,22 +1,10 @@
 package model;
 
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
 public abstract class AAlgorithm {
-    public abstract String generateKey();
-
-    public abstract void loadKey(String key);
-    public abstract String getKey();
-
-    public abstract String encrypt(String msg);
-    public abstract String decrypt(String msg);
-
-    public String convertMsg(String msg) {
-        return msg.toLowerCase();
-    }
-
-    protected String alphabet = alphabetsMapping.get(Alphabet.ENGLISH);
     protected static Map<Alphabet, String> alphabetsMapping = new HashMap<>();
 
     static {
@@ -24,14 +12,34 @@ public abstract class AAlgorithm {
         alphabetsMapping.put(Alphabet.VIETNAM, Alphabet.VIETNAM.getDescription());
     }
 
+    protected String alphabet = alphabetsMapping.get(Alphabet.ENGLISH);
+
+    public AAlgorithm() {
+        generateKey();
+    }
+
+    public abstract String generateKey();
+
+    public abstract void loadKey(String key);
+
+    public abstract String getKey();
+
+    public abstract String encrypt(String msg);
+
+    public abstract String decrypt(String msg);
+
+    public String convertMsg(String msg) {
+        return msg.toLowerCase().trim();
+    }
+
     public void setAlphabet(Alphabet afu) {
         this.alphabet = alphabetsMapping.get(afu);
     }
 
     public void setAlphabet(String nameAlphabet) {
-        for (Map.Entry<Alphabet,String> entry : alphabetsMapping.entrySet()) {
+        for (Map.Entry<Alphabet, String> entry : alphabetsMapping.entrySet()) {
             Alphabet alphabetName = entry.getKey();
-            if(alphabetName.name().equalsIgnoreCase(nameAlphabet)) {
+            if (alphabetName.name().equalsIgnoreCase(nameAlphabet)) {
                 alphabet = alphabetsMapping.get(alphabetName);
                 return;
             }
@@ -39,10 +47,10 @@ public abstract class AAlgorithm {
     }
 
     public String getNameAlphabet() {
-        for (Map.Entry<Alphabet,String> entry : alphabetsMapping.entrySet()) {
+        for (Map.Entry<Alphabet, String> entry : alphabetsMapping.entrySet()) {
             Alphabet alphabetName = entry.getKey();
             String des = entry.getValue();
-            if(des.equalsIgnoreCase(alphabet)) {
+            if (des.equalsIgnoreCase(alphabet)) {
                 return alphabetName.name().toUpperCase();
             }
         }
@@ -58,5 +66,13 @@ public abstract class AAlgorithm {
             }
         }
         return -1;
+    }
+
+    protected String base64Encode(byte[] src) {
+        return Base64.getEncoder().encodeToString(src);
+    }
+
+    protected byte[] base64Decode(byte[] src) {
+        return Base64.getDecoder().decode(src);
     }
 }

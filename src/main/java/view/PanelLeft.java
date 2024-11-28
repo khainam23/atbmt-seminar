@@ -1,8 +1,10 @@
 package view;
 
+import config.DimensionConfig;
 import config.IconConfig;
 import config.LayoutConfig;
 import controller.FactoryLayoutAction;
+import view.custom.ScrollPaneWin11;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,7 +22,9 @@ import static config.DimensionConfig.SIZE_LEFT;
  */
 public class PanelLeft extends JPanel {
     private static PanelLeft panelLeft;
+    // Xử lý tương tác
     private JPanel panelList;
+    // Các phần tử sẽ không được hiển thị trên lựa chọn menu
     private Set<String> layoutIgnore;
 
     private PanelLeft() {
@@ -47,7 +51,7 @@ public class PanelLeft extends JPanel {
         panelList.setLayout(new BoxLayout(panelList, BoxLayout.Y_AXIS));
         scrollPane.setViewportView(panelList);
         insertItemToList();
-        scrollPane.setPreferredSize(new Dimension((int) (SIZE_LEFT.getWidth()), (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight() - 120));
+        scrollPane.setPreferredSize(new Dimension((int) (SIZE_LEFT.getWidth()), (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight() - 70));
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         add(scrollPane);
@@ -91,6 +95,7 @@ public class PanelLeft extends JPanel {
         panelItem.addMouseListener(FactoryLayoutAction.getInstance());
         panelItem.add(labelIcon);
         panelItem.add(labelName);
+        panelItem.setPreferredSize(DimensionConfig.SIZE_ITEM_MENU);
         panelList.add(panelItem);
     }
 

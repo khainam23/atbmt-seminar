@@ -1,8 +1,9 @@
-package view;
+package view.algorithm.symmetric.basic;
 
 import controller.FactoryLayoutAction;
 import model.Alphabet;
 import model.algorithm.symmetric.basic.Caesar;
+import view.algorithm.APanel;
 
 import javax.swing.*;
 import javax.swing.text.DefaultFormatterFactory;
@@ -11,26 +12,26 @@ import java.awt.*;
 import java.text.NumberFormat;
 import java.util.Arrays;
 
-public class PanelCaesarLayout extends JPanel implements IContentPanel {
-    private static PanelCaesarLayout panelCaesarLayout;
-    private JTextArea textArea;
+public class PanelCaesar extends APanel {
+    private static PanelCaesar panelCaesarLayout;
     private Caesar caesarModel;
 
-    private PanelCaesarLayout() {
-        init();
+    public static PanelCaesar getInstance() {
+        return panelCaesarLayout == null ? panelCaesarLayout = new PanelCaesar() : panelCaesarLayout;
     }
 
-    public static PanelCaesarLayout getInstance() {
-        return panelCaesarLayout == null ? panelCaesarLayout = new PanelCaesarLayout() : panelCaesarLayout;
-    }
-
-    private void init() {
+    @Override
+    protected void init() {
         caesarModel = new Caesar();
 
         setLayout(new BorderLayout(2, 2));
 
         JPanel panelTop = new JPanel(new GridLayout(1, 2));
         JComboBox<String> comboBoxLanguages = new JComboBox<>(Arrays.stream(Alphabet.values()).map(Enum::name).toArray(String[]::new));
+        comboBoxLanguages.addItemListener(item -> {
+            String nameAlphabet = (String) item.getItem();
+            caesarModel.setAlphabet(nameAlphabet);
+        });
         SpinnerNumberModel modelSpinner = new SpinnerNumberModel(Integer.parseInt(caesarModel.getKey()), 1, Alphabet.ENGLISH.getDescription().length(), 1);
         JSpinner spinner = new JSpinner(modelSpinner);
         JSpinner.DefaultEditor editor = (JSpinner.DefaultEditor) spinner.getEditor();
@@ -42,16 +43,6 @@ public class PanelCaesarLayout extends JPanel implements IContentPanel {
         panelTop.add(comboBoxLanguages);
         panelTop.add(spinner);
 
-        JPanel panelCenter = new JPanel(new BorderLayout());
-        ScrollPaneWin11 scrollPane = new ScrollPaneWin11();
-        textArea = new JTextArea();
-        textArea.setEditable(false);
-        textArea.setFont(new Font("Arial", Font.PLAIN, 18));
-        textArea.setLineWrap(true);
-        textArea.setWrapStyleWord(true);
-        scrollPane.setViewportView(textArea);
-        panelCenter.add(scrollPane, BorderLayout.CENTER);
-
         JPanel panelBottom = new JPanel(new GridLayout(1, 2, 5, 5));
         JButton btnEncrypt = new JButton("Encrypt");
         btnEncrypt.addActionListener(e -> {
@@ -62,7 +53,7 @@ public class PanelCaesarLayout extends JPanel implements IContentPanel {
             if (spinnerNumber != Integer.parseInt(caesarModel.generateKey())) {
                 caesarModel.loadKey(spinnerNumber + "");
             }
-            if(!caesarModel.getNameAlphabet().equals(alphabetName)) {
+            if (!caesarModel.getNameAlphabet().equals(alphabetName)) {
                 caesarModel.setAlphabet(alphabetName);
             }
             String encryptContent = caesarModel.encrypt(content);
@@ -78,7 +69,7 @@ public class PanelCaesarLayout extends JPanel implements IContentPanel {
                 caesarModel.loadKey(spinnerNumber + "");
             }
 
-            if(!caesarModel.getNameAlphabet().equals(alphabetName)) {
+            if (!caesarModel.getNameAlphabet().equals(alphabetName)) {
                 caesarModel.setAlphabet(alphabetName);
             }
             String decryptContent = caesarModel.decrypt(content);
@@ -88,12 +79,7 @@ public class PanelCaesarLayout extends JPanel implements IContentPanel {
         panelBottom.add(btnDecrypt);
 
         add(panelTop, BorderLayout.NORTH);
-        add(panelCenter, BorderLayout.CENTER);
+        add(createPanelContent(), BorderLayout.CENTER);
         add(panelBottom, BorderLayout.SOUTH);
-    }
-
-    @Override
-    public void setContent(String content) {
-        textArea.setText(content);
     }
 }

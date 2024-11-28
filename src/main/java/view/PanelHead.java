@@ -1,5 +1,7 @@
 package view;
 
+import view.custom.ButtonCustom;
+
 import javax.swing.*;
 import java.awt.*;
 

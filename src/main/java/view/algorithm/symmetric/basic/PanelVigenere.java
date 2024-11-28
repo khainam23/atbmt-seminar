@@ -1,30 +1,28 @@
-package view;
+package view.algorithm.symmetric.basic;
 
 import config.IconConfig;
 import controller.FactoryLayoutAction;
 import model.Alphabet;
-import model.algorithm.symmetric.basic.SubstitutionCipher;
+import model.algorithm.symmetric.basic.Vigenere;
+import view.algorithm.APanel;
+import view.custom.ButtonCustom;
+import view.custom.ScrollPaneWin11;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.Arrays;
 
-public class PanelSubstitutionLayout extends JPanel implements IContentPanel {
-    private static PanelSubstitutionLayout panelCaesarLayout;
-    private SubstitutionCipher substitutionCipher;
-    private JTextArea textArea;
+public class PanelVigenere extends APanel {
+    private static PanelVigenere panelVigenere;
+    private Vigenere vigenere;
     private JLabel labelHashLanguage;
 
-    private PanelSubstitutionLayout() {
-        init();
+    public static PanelVigenere getInstance() {
+        return panelVigenere == null ? panelVigenere = new PanelVigenere() : panelVigenere;
     }
-
-    public static PanelSubstitutionLayout getInstance() {
-        return panelCaesarLayout == null ? panelCaesarLayout = new PanelSubstitutionLayout() : panelCaesarLayout;
-    }
-
-    private void init() {
-        substitutionCipher = new SubstitutionCipher();
+    @Override
+    protected void init() {
+        vigenere = new Vigenere();
 
         setLayout(new BorderLayout(2, 2));
 
@@ -33,42 +31,32 @@ public class PanelSubstitutionLayout extends JPanel implements IContentPanel {
         JComboBox<String> comboBoxLanguages = new JComboBox<>(Arrays.stream(Alphabet.values()).map(Enum::name).toArray(String[]::new));
         comboBoxLanguages.addItemListener(item -> {
             String nameAlphabet = (String) item.getItem();
-            substitutionCipher.setAlphabet(nameAlphabet);
-            labelHashLanguage.setText(substitutionCipher.generateKey());
+            vigenere.setAlphabet(nameAlphabet);
+            labelHashLanguage.setText(vigenere.generateKey());
         });
         JPanel panelShowGenerateLanguage = getPanelShowGenerateLanguage();
         panelOptionFunction.add(comboBoxLanguages);
         panelTop.add(panelOptionFunction);
         panelTop.add(panelShowGenerateLanguage);
 
-        JPanel panelCenter = new JPanel(new BorderLayout());
-        ScrollPaneWin11 scrollPane = new ScrollPaneWin11();
-        textArea = new JTextArea();
-        textArea.setEditable(false);
-        textArea.setFont(new Font("Arial", Font.PLAIN, 18));
-        textArea.setLineWrap(true);
-        textArea.setWrapStyleWord(true);
-        scrollPane.setViewportView(textArea);
-        panelCenter.add(scrollPane, BorderLayout.CENTER);
-
         JPanel panelBottom = new JPanel(new GridLayout(1, 2, 5, 5));
         JButton btnEncrypt = new JButton("Encrypt");
         btnEncrypt.addActionListener(e -> {
             String content = textArea.getText();
-            String encryptContent = substitutionCipher.encrypt(content);
+            String encryptContent = vigenere.encrypt(content);
             FactoryLayoutAction.getInstance().showMsgInRight(encryptContent);
         });
         JButton btnDecrypt = new JButton("Decrypt");
         btnDecrypt.addActionListener(e -> {
             String content = textArea.getText();
-            String decryptContent = substitutionCipher.decrypt(content);
+            String decryptContent = vigenere.decrypt(content);
             FactoryLayoutAction.getInstance().showMsgInRight(decryptContent);
         });
         panelBottom.add(btnEncrypt);
         panelBottom.add(btnDecrypt);
 
         add(panelTop, BorderLayout.NORTH);
-        add(panelCenter, BorderLayout.CENTER);
+        add(createPanelContent(), BorderLayout.CENTER);
         add(panelBottom, BorderLayout.SOUTH);
     }
 
@@ -76,7 +64,7 @@ public class PanelSubstitutionLayout extends JPanel implements IContentPanel {
         JPanel panelShowGenerateLanguage = new JPanel(new GridLayout(1, 3, 5, 5));
         ButtonCustom btnReloadAlphabet = new ButtonCustom(IconConfig.ICON_RELOAD);
         btnReloadAlphabet.addActionListener(e -> {
-            labelHashLanguage.setText(substitutionCipher.generateKey());
+            labelHashLanguage.setText(vigenere.generateKey());
             repaint();
         });
         ButtonCustom btnLoadKey = new ButtonCustom(IconConfig.ICON_INPUT);
@@ -86,23 +74,18 @@ public class PanelSubstitutionLayout extends JPanel implements IContentPanel {
                 JOptionPane.showMessageDialog(null, "Key isn't empty!!!");
             } else {
                 try {
-                    substitutionCipher.loadKey(key);
-                    labelHashLanguage.setText(substitutionCipher.getKey());
+                    vigenere.loadKey(key);
+                    labelHashLanguage.setText(vigenere.getKey());
                 } catch (Exception exception) {
                     JOptionPane.showMessageDialog(null, exception.getMessage());
                 }
             }
         });
-        labelHashLanguage = new JLabel(substitutionCipher.getKey(), SwingConstants.CENTER);
+        labelHashLanguage = new JLabel(vigenere.getKey(), SwingConstants.CENTER);
         labelHashLanguage.setFont(new Font("Arial", Font.PLAIN, 15));
         panelShowGenerateLanguage.add(btnLoadKey);
         panelShowGenerateLanguage.add(btnReloadAlphabet);
         panelShowGenerateLanguage.add(labelHashLanguage);
         return panelShowGenerateLanguage;
-    }
-
-    @Override
-    public void setContent(String content) {
-        textArea.setText(content);
     }
 }

@@ -13,10 +13,6 @@ import java.util.Random;
 public class Vigenere extends AAlgorithm {
     private String keyword;
 
-    public Vigenere() {
-        generateKey();
-    }
-
     @Override
     public String generateKey() {
         Random rd = new Random();
